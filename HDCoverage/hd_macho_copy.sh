@@ -75,7 +75,7 @@ function read_dir {
             filePath=$1"/"$file
             hecho "read_dir filePath $filePath"
             # 判断后缀是.o文件
-            if [[ "${filePath##*.}"x = "o"x ]]; then
+            if [[ "${filePath##*.}"x = "o"x ]] && [[ ! "$filePath" =~ \.thinlto\.o$ ]]; then
                 hecho "macho_filePath $filePath generateMergeOFiles: $generateMergeOFiles"
                 cp -r $filePath $generateMergeOFiles
             fi
@@ -89,7 +89,12 @@ function generateMergeO {
     read_dir $PROJECT_TEMP_ROOT
     # https://stackoverflow.com/questions/66245096/xcrun-llvm-cov-show-no-coverage-data-found
     # 将多个目标文件手动链接然后生成组合目标文件
-    ld -r -o $machoFiles/$PROJECT.o $generateMergeOFiles/*.o
+    hecho "generateMergeO: ld -r -o ${machoFiles}/${PROJECT}.o ${generateMergeOFiles}/*.o"
+    if [[ -f $generateMergeOFiles/object_files.txt ]]; then
+        rm $generateMergeOFiles/object_files.txt
+    fi
+    find $generateMergeOFiles/ -name "*.o" > object_files.txt
+    ld -r -o $machoFiles/$PROJECT.o -filelist object_files.txt
 }
 
 main

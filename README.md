@@ -48,19 +48,19 @@ post_install do |installer|
       if(config.name <=> 'Release') == 0
         config.build_settings['OTHER_CFLAGS'] = '$(inherited)'
         config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited)'
-        config.build_settings['OTHER_LDFLAGS'] = '$(inherited)'
+        config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -ld64'
         ntargets.each do |ntarget|
           if(ntarget <=> target.name) == 0
             config.build_settings['OTHER_CFLAGS'] = '$(inherited) -fprofile-instr-generate -fcoverage-mapping'
             config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -profile-generate -profile-coverage-mapping'
-            config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -fprofile-instr-generate'
+            config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -fprofile-instr-generate -ld64'
             break
           end
         end
         else
         config.build_settings['OTHER_CFLAGS'] = '$(inherited)'
         config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited)'
-        config.build_settings['OTHER_LDFLAGS'] = '$(inherited)'
+        config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -ld64'
       end
     end
   end
@@ -80,13 +80,13 @@ post_install do |installer|
           # Swift代码覆盖率插桩配置
           config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -profile-generate -profile-coverage-mapping'
           # 采集代码覆盖率配置
-          config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -fprofile-instr-generate'
+          config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -fprofile-instr-generate -ld64'
           # Release需要设置，不然无法解析代码覆盖率
           config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Onone'
           else
           config.build_settings['OTHER_CFLAGS'] = '$(inherited)'
           config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited)'
-          config.build_settings['OTHER_LDFLAGS'] = '$(inherited)'
+          config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -ld64'
           config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = ''
         end
       end
